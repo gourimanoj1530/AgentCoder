@@ -1,0 +1,64 @@
+{
+  "family": "agentcoder-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::176980002446:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "176980002446.dkr.ecr.ap-south-1.amazonaws.com/agentcoder:backend",
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "GROQ_API_KEY",        "value": "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" },
+        { "name": "TAVILY_API_KEY",       "value": "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" },
+        { "name": "LANGSMITH_API_KEY",    "value": "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" },
+        { "name": "LANGSMITH_PROJECT",    "value": "agentcoder" },
+        { "name": "DATABASE_URL",         "value": "postgresql://agentcoder:agentcoder123@agentcoder-db.cnm6q8goch98.ap-south-1.rds.amazonaws.com:5432/agentcoder" }
+      ],
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group":         "/ecs/agentcoder",
+          "awslogs-region":        "ap-south-1",
+          "awslogs-stream-prefix": "backend"
+        }
+      }
+    },
+    {
+      "name": "frontend",
+      "image": "176980002446.dkr.ecr.ap-south-1.amazonaws.com/agentcoder-frontend:latest",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "API_URL", "value": "http://localhost:8000" }
+      ],
+      "essential": true,
+      "dependsOn": [
+        {
+          "containerName": "backend",
+          "condition": "START"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group":         "/ecs/agentcoder",
+          "awslogs-region":        "ap-south-1",
+          "awslogs-stream-prefix": "frontend"
+        }
+      }
+    }
+  ]
+}

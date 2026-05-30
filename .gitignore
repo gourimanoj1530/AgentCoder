@@ -1,0 +1,24 @@
+# Environment
+.env
+firebase-service-account.json
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+agentcoder_memory.json
+
+# Node
+agentcoder-frontend/node_modules/
+agentcoder-frontend/dist/
+
+# Docker
+*.tar
+
+# AWS
+task-definition.json
+fix_imports.py
+test_groq.py
+test_groq_second.py
+notes.txt
